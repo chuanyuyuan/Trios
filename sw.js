@@ -1,4 +1,4 @@
-const CACHE = 'trios-v2';
+const CACHE = 'trios-v3';
 const STATIC_URLS = [
   '/css/style.css',
   '/js/utils.js',
@@ -7,7 +7,9 @@ const STATIC_URLS = [
   '/js/movies.js',
   '/js/tasks.js',
   '/js/app.js',
-  '/manifest.json'
+  '/manifest.json',
+  '/icons/icon-192x192.png',
+  '/icons/icon-512x512.png'
 ];
 
 self.addEventListener('install', (e) => {

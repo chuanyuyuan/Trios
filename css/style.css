@@ -616,3 +616,118 @@ main.container {
   --background-color: #e5e5e5;
   --border-color: #e5e5e5;
 }
+
+/* ===== Settings Page ===== */
+.settings-section {
+  margin-bottom: 1.5rem;
+}
+.settings-section-title {
+  font-size: 1rem;
+  font-weight: 600;
+  margin: 0 0 0.25rem;
+  color: var(--text);
+}
+.settings-section-desc {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  margin: 0 0 0.75rem;
+}
+
+/* Toggle Switch */
+.settings-toggle-list {
+  background: var(--card-bg);
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: var(--shadow);
+}
+.settings-toggle-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 1rem;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+}
+.settings-toggle-item + .settings-toggle-item {
+  border-top: 1px solid var(--border);
+}
+.settings-toggle-item.disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+.settings-toggle-item span:first-child {
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: var(--text);
+}
+.settings-toggle-input {
+  display: none;
+}
+.settings-toggle-slider {
+  position: relative;
+  width: 48px;
+  height: 28px;
+  background: #e9e9ea;
+  border-radius: 14px;
+  transition: background 0.2s;
+  flex-shrink: 0;
+  cursor: pointer;
+}
+.settings-toggle-slider::after {
+  content: '';
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 24px;
+  height: 24px;
+  background: #fff;
+  border-radius: 50%;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+  transition: transform 0.2s;
+}
+.settings-toggle-input:checked + .settings-toggle-slider {
+  background: var(--accent);
+}
+.settings-toggle-input:checked + .settings-toggle-slider::after {
+  transform: translateX(20px);
+}
+.disabled .settings-toggle-slider {
+  cursor: default;
+}
+
+/* ===== Completed Toast ===== */
+.completed-toast {
+  position: absolute;
+  top: 0.5rem;
+  right: 3.2rem;
+  background: var(--priority-low);
+  color: #fff;
+  font-size: 0.7rem;
+  font-weight: 600;
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+  animation: toastIn 0.25s ease, toastOut 0.35s ease 1.85s forwards;
+  z-index: 2;
+  pointer-events: none;
+  white-space: nowrap;
+  line-height: 1.4;
+}
+@keyframes toastIn {
+  from { opacity: 0; transform: translateY(-6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes toastOut {
+  from { opacity: 1; }
+  to   { opacity: 0; transform: translateY(-3px); }
+}
+
+/* Settings Button Group */
+.settings-btn-group {
+  display: flex;
+  gap: 0.75rem;
+}
+.settings-btn-group button {
+  flex: 1;
+  margin: 0;
+}

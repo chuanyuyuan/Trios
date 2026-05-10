@@ -81,7 +81,20 @@ const Tasks = {
       });
       this.save();
       this.render();
+      this.showCompletedToast(id);
     }
+  },
+
+  showCompletedToast(id) {
+    const card = document.querySelector(`.item-card[data-id="${id}"]`);
+    if (!card) return;
+    const toast = document.createElement('div');
+    toast.className = 'completed-toast';
+    toast.textContent = '✓ 已记录';
+    card.appendChild(toast);
+    setTimeout(() => {
+      if (toast.parentNode) toast.remove();
+    }, 2200);
   },
 
   updatePriority(id, priority) {

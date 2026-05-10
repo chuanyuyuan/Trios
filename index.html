@@ -8,8 +8,8 @@
   <meta name="theme-color" content="#007aff">
   <meta name="description" content="Trios - 个人生活管理中心">
   <link rel="manifest" href="manifest.json">
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>◈</text></svg>">
-  <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>◈</text></svg>">
+  <link rel="icon" href="icons/icon.svg">
+  <link rel="apple-touch-icon" href="icons/icon-192x192.png">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css">
   <link rel="stylesheet" href="css/style.css">
   <title>Trios</title>
@@ -32,6 +32,7 @@
       <button class="tab-btn active" data-tab="tasks">任务</button>
       <button class="tab-btn" data-tab="ideas">灵感</button>
       <button class="tab-btn" data-tab="movies">电影</button>
+      <button class="tab-btn" data-tab="settings">设置</button>
     </div>
   </nav>
 
@@ -55,6 +56,11 @@
     <section id="tab-movies" class="tab-content">
       <button id="add-movie-btn" class="primary">+ 添加电影</button>
       <div id="movies-list" class="item-list"></div>
+    </section>
+
+    <!-- Settings Tab -->
+    <section id="tab-settings" class="tab-content">
+      <div id="settings-content"></div>
     </section>
   </main>
 
@@ -123,11 +129,14 @@
     </div>
   </div>
 
+  <input type="file" id="import-file-input" accept=".json" style="display:none">
+
   <script src="js/utils.js"></script>
   <script src="js/confirm.js"></script>
   <script src="js/ideas.js"></script>
   <script src="js/movies.js"></script>
   <script src="js/tasks.js"></script>
+  <script src="js/settings.js"></script>
   <script src="js/app.js"></script>
 </body>
 </html>
