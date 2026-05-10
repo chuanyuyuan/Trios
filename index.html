@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="theme-color" content="#007aff">
+  <meta name="description" content="Trios - 个人生活管理中心">
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>◈</text></svg>">
+  <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>◈</text></svg>">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css">
+  <link rel="stylesheet" href="css/style.css">
+  <title>Trios</title>
+</head>
+<body>
+  <header class="app-header">
+    <div class="container">
+      <div class="header-row">
+        <div class="header-left">
+          <h1 class="app-title">Trios</h1>
+          <p class="app-subtitle">个人生活管理中心</p>
+        </div>
+        <input type="search" id="header-search" class="header-search" placeholder="搜索...">
+      </div>
+    </div>
+  </header>
+
+  <nav class="tab-nav">
+    <div class="container tab-nav-inner">
+      <button class="tab-btn active" data-tab="tasks">任务</button>
+      <button class="tab-btn" data-tab="ideas">灵感</button>
+      <button class="tab-btn" data-tab="movies">电影</button>
+    </div>
+  </nav>
+
+  <main class="container main-content">
+    <!-- Tasks Tab -->
+    <section id="tab-tasks" class="tab-content active">
+      <button id="add-task-btn" class="primary">+ 添加任务</button>
+      <div id="tasks-list" class="item-list"></div>
+    </section>
+
+    <!-- Ideas Tab -->
+    <section id="tab-ideas" class="tab-content">
+      <form id="ideas-form" class="input-group">
+        <textarea id="idea-input" rows="3" placeholder="记录你此刻的灵感..." required></textarea>
+        <button type="submit">记录</button>
+      </form>
+      <div id="ideas-list" class="item-list"></div>
+    </section>
+
+    <!-- Movies Tab -->
+    <section id="tab-movies" class="tab-content">
+      <button id="add-movie-btn" class="primary">+ 添加电影</button>
+      <div id="movies-list" class="item-list"></div>
+    </section>
+  </main>
+
+  <!-- Comment Dialog -->
+  <div id="comment-overlay" class="dialog-overlay" style="display:none">
+    <div class="dialog-card dialog-card--wide">
+      <p id="comment-dialog-title" class="dialog-title"></p>
+      <div class="comment-form-group">
+        <div class="rating-slider-row">
+          <span class="rating-label">评分</span>
+          <input type="range" id="comment-rating-slider" min="0" max="10" step="0.1" value="7.0">
+          <span id="comment-rating-value" class="rating-value">7.0</span>
+        </div>
+        <textarea id="comment-input" class="comment-textarea" rows="3" placeholder="写下你的评论..."></textarea>
+        <div class="comment-submit-row">
+          <span id="comment-char-count" class="char-count">0 / 500</span>
+          <button id="comment-submit" class="primary">发表</button>
+        </div>
+      </div>
+      <div class="dialog-actions" style="margin-top:0.75rem;">
+        <button id="comment-dialog-close" class="secondary">关闭</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Confirm Dialog -->
+  <div id="confirm-overlay" class="dialog-overlay" style="display:none">
+    <div class="dialog-card">
+      <p id="confirm-message" class="dialog-message"></p>
+      <div class="dialog-actions">
+        <button id="confirm-cancel" class="secondary">取消</button>
+        <button id="confirm-ok" class="primary">确定</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add Movie Dialog -->
+  <div id="add-movie-overlay" class="dialog-overlay" style="display:none">
+    <div class="dialog-card">
+      <p class="dialog-title">添加电影</p>
+      <input type="text" id="add-movie-input" class="dialog-input" placeholder="输入电影名称...">
+      <div class="dialog-actions">
+        <button id="add-movie-cancel" class="secondary">取消</button>
+        <button id="add-movie-confirm" class="primary">确定</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add Task Dialog -->
+  <div id="add-task-overlay" class="dialog-overlay" style="display:none">
+    <div class="dialog-card">
+      <p class="dialog-title">添加任务</p>
+      <textarea id="add-task-input" class="dialog-input" rows="3" placeholder="输入任务内容..."></textarea>
+      <div style="text-align:right;font-size:0.75rem;color:var(--text-secondary);margin-top:-0.75rem;margin-bottom:0.75rem">
+        <span id="add-task-char-count">0</span> / 50
+      </div>
+      <select id="add-task-priority" class="dialog-input">
+        <option value="3">普通</option>
+        <option value="2" selected>重要</option>
+        <option value="1">紧急</option>
+      </select>
+      <div class="dialog-actions">
+        <button id="add-task-cancel" class="secondary">取消</button>
+        <button id="add-task-confirm" class="primary">确定</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/utils.js"></script>
+  <script src="js/confirm.js"></script>
+  <script src="js/ideas.js"></script>
+  <script src="js/movies.js"></script>
+  <script src="js/tasks.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
