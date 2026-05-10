@@ -1,7 +1,5 @@
-const CACHE = 'trios-v1';
-const URLS = [
-  '/',
-  '/index.html',
+const CACHE = 'trios-v2';
+const STATIC_URLS = [
   '/css/style.css',
   '/js/utils.js',
   '/js/confirm.js',
@@ -14,7 +12,7 @@ const URLS = [
 
 self.addEventListener('install', (e) => {
   e.waitUntil(
-    caches.open(CACHE).then((cache) => cache.addAll(URLS))
+    caches.open(CACHE).then((cache) => cache.addAll(STATIC_URLS))
   );
   self.skipWaiting();
 });
@@ -29,7 +27,25 @@ self.addEventListener('activate', (e) => {
 });
 
 self.addEventListener('fetch', (e) => {
+  const req = e.request;
+  const url = new URL(req.url);
+
+  // HTML: 优先走网络，离线时用缓存
+  if (url.pathname === '/' || url.pathname === '/index.html') {
+    e.respondWith(
+      fetch(req)
+        .then((res) => {
+          const clone = res.clone();
+          caches.open(CACHE).then((cache) => cache.put(req, clone));
+          return res;
+        })
+        .catch(() => caches.match(req))
+    );
+    return;
+  }
+
+  // 静态资源: 缓存优先
   e.respondWith(
-    caches.match(e.request).then((res) => res || fetch(e.request))
+    caches.match(req).then((res) => res || fetch(req))
   );
 });

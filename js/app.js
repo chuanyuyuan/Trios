@@ -54,4 +54,11 @@
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('sw.js').catch(() => {});
   }
+
+  // iOS PWA keyboard workaround
+  document.addEventListener('touchstart', () => {}, { passive: true });
+  document.addEventListener('click', () => {}, { passive: true });
+  // Force iOS to activate text input system in standalone mode
+  document.body.contentEditable = true;
+  document.body.contentEditable = false;
 })();

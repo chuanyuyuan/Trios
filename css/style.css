@@ -15,11 +15,27 @@
   --shadow-hover: 0 4px 12px rgba(0,0,0,0.1);
 }
 
+html {
+  height: 100%;
+  -webkit-overflow-scrolling: touch;
+}
 body {
   background: var(--bg);
   color: var(--text);
   font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'PingFang SC', 'Helvetica Neue', sans-serif;
+  min-height: 100dvh;
+  height: auto;
   padding-bottom: env(safe-area-inset-bottom, 0);
+  -webkit-user-select: text;
+  user-select: text;
+  touch-action: manipulation;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+input, textarea, [contenteditable] {
+  -webkit-user-select: text;
+  user-select: text;
+  touch-action: manipulation;
 }
 
 /* ===== Header ===== */

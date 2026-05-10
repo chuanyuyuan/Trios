@@ -186,12 +186,6 @@ const Movies = {
     textEl.contentEditable = 'true';
     textEl.focus();
 
-    const range = document.createRange();
-    range.selectNodeContents(textEl);
-    const sel = window.getSelection();
-    sel.removeAllRanges();
-    sel.addRange(range);
-
     const finishEdit = () => {
       textEl.contentEditable = 'false';
       const newVal = textEl.textContent.trim();
@@ -217,12 +211,6 @@ const Movies = {
 
     textEl.contentEditable = 'true';
     textEl.focus();
-
-    const range = document.createRange();
-    range.selectNodeContents(textEl);
-    const sel = window.getSelection();
-    sel.removeAllRanges();
-    sel.addRange(range);
 
     const finishEdit = () => {
       textEl.contentEditable = 'false';
@@ -253,7 +241,7 @@ const Movies = {
 
     const overlay = document.getElementById('comment-overlay');
     overlay.style.display = 'flex';
-    setTimeout(() => document.getElementById('comment-input').focus(), 50);
+    document.getElementById('comment-input').focus();
   },
 
   escapeHtml(text) {
@@ -340,8 +328,7 @@ const Movies = {
     const input = document.getElementById('add-movie-input');
     input.value = '';
     document.getElementById('add-movie-overlay').style.display = 'flex';
-    // Auto focus input after dialog renders
-    setTimeout(() => input.focus(), 50);
+    input.focus();
   },
 
   closeAddDialog() {

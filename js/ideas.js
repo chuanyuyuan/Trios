@@ -94,15 +94,6 @@ const Ideas = {
     textEl.contentEditable = 'true';
     textEl.focus();
 
-    const selectAll = () => {
-      const range = document.createRange();
-      range.selectNodeContents(textEl);
-      const sel = window.getSelection();
-      sel.removeAllRanges();
-      sel.addRange(range);
-    };
-    selectAll();
-
     const finishEdit = () => {
       textEl.contentEditable = 'false';
       const newVal = textEl.textContent.trim();
@@ -115,15 +106,9 @@ const Ideas = {
 
     textEl.addEventListener('blur', finishEdit, { once: true });
     textEl.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter') {
-        e.preventDefault();
-        textEl.blur();
-      }
-      if (e.key === 'Escape') {
-        textEl.textContent = oldVal;
-        textEl.blur();
-      }
-    }, { once: false });
+      if (e.key === 'Enter') { e.preventDefault(); textEl.blur(); }
+      if (e.key === 'Escape') { textEl.textContent = oldVal; textEl.blur(); }
+    });
   },
 
   escapeHtml(text) {

@@ -297,12 +297,6 @@ const Tasks = {
     textEl.contentEditable = 'true';
     textEl.focus();
 
-    const range = document.createRange();
-    range.selectNodeContents(textEl);
-    const sel = window.getSelection();
-    sel.removeAllRanges();
-    sel.addRange(range);
-
     const finishEdit = () => {
       textEl.contentEditable = 'false';
       const newVal = textEl.textContent.trim();
@@ -369,7 +363,7 @@ const Tasks = {
     document.getElementById('add-task-char-count').textContent = '0';
     document.getElementById('add-task-char-count').style.color = '';
     document.getElementById('add-task-overlay').style.display = 'flex';
-    setTimeout(() => input.focus(), 50);
+    input.focus();
   },
 
   closeAddDialog() {
