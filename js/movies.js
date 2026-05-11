@@ -5,7 +5,7 @@ const Movies = {
 
   init() {
     this.load();
-    this.bindEvents();
+    if (!this._bound) { this.bindEvents(); this._bound = true; }
     this.render();
   },
 

@@ -8,7 +8,7 @@ const Tasks = {
 
   init() {
     this.load();
-    this.bindEvents();
+    if (!this._bound) { this.bindEvents(); this._bound = true; }
     this.render();
   },
 
@@ -88,12 +88,15 @@ const Tasks = {
   showCompletedToast(id) {
     const card = document.querySelector(`.item-card[data-id="${id}"]`);
     if (!card) return;
+    const checkbox = card.querySelector('.task-checkbox');
+    if (checkbox) checkbox.disabled = true;
     const toast = document.createElement('div');
     toast.className = 'completed-toast';
     toast.textContent = '✓ 已记录';
     card.appendChild(toast);
     setTimeout(() => {
       if (toast.parentNode) toast.remove();
+      if (checkbox) checkbox.disabled = false;
     }, 2200);
   },
 

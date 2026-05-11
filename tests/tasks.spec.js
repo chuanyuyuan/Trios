@@ -34,6 +34,21 @@ test.describe('任务清单 - Tasks Module', () => {
     await expect(page.locator('#tasks-list .item-text')).toContainText('完成项目报告');
   });
 
+  test('添加任务 — 重复调用init不会产生重复任务', async ({ page }) => {
+    // 模拟 Settings.importData 重复调用 init 的场景
+    await page.evaluate(() => {
+      Tasks.init();
+      Tasks.init();
+      Tasks.init();
+    });
+    await page.click('#add-task-btn');
+    await page.fill('#add-task-input', '防重复测试');
+    await page.click('#add-task-confirm');
+    // 确认按钮只触发一次，应只生成一个任务
+    await expect(page.locator('#tasks-list .item-card')).toHaveCount(1);
+    await expect(page.locator('#tasks-list .item-text')).toContainText('防重复测试');
+  });
+
   test('添加任务弹窗 — 空输入不添加', async ({ page }) => {
     await page.click('#add-task-btn');
     await page.fill('#add-task-input', '  ');
@@ -231,20 +246,20 @@ test.describe('任务清单 - Tasks Module', () => {
     await expect(page.locator('#completed-tasks-list .item-text')).toContainText('待完成任务');
   });
 
-  test('完成任务 — 多次勾选产生多条记录', async ({ page }) => {
+  test('完成任务 — 等待toast消失后可再次勾选', async ({ page }) => {
     await page.click('#add-task-btn');
     await page.fill('#add-task-input', '重复完成');
     await page.click('#add-task-confirm');
 
     const checkbox = page.locator('#tasks-list .task-checkbox');
     await checkbox.click();
-    await page.waitForTimeout(30);
+    // 等待 toast 消失后 checkbox 恢复
+    await page.waitForTimeout(2500);
     await checkbox.click();
-    await page.waitForTimeout(30);
-    await checkbox.click();
+    await page.waitForTimeout(2500);
 
     await page.click('#toggle-completed-btn');
-    await expect(page.locator('#completed-tasks-list .item-card')).toHaveCount(3);
+    await expect(page.locator('#completed-tasks-list .item-card')).toHaveCount(2);
   });
 
   // ===== Completed Section =====

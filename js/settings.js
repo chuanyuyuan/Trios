@@ -84,9 +84,12 @@ const Settings = {
         this.load();
       }
 
-      Ideas.init();
-      Movies.init();
-      Tasks.init();
+      Ideas.load();
+      Movies.load();
+      Tasks.load();
+      Ideas.render();
+      Movies.render();
+      Tasks.render();
       this.render();
       if (typeof applyModuleVisibility === 'function') {
         applyModuleVisibility();
