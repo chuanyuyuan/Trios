@@ -2,6 +2,7 @@ const Movies = {
   data: [],
   searchQuery: '',
   currentMovieId: null,
+  selectedResult: null,
 
   init() {
     this.load();
@@ -17,7 +18,7 @@ const Movies = {
     Storage.set('trios_movies', this.data);
   },
 
-  add(name) {
+  add(name, extra = {}) {
     this.data.unshift({
       id: ID.generate(),
       name: name.trim(),
@@ -25,7 +26,9 @@ const Movies = {
       watched: false,
       watchedAt: null,
       comments: [],
-      poster: null
+      poster: extra.poster || null,
+      tmdbId: extra.tmdbId || null,
+      year: extra.year || null
     });
     this.save();
     this.render();
@@ -110,6 +113,24 @@ const Movies = {
     this.render();
   },
 
+  async searchTMDB(query) {
+    const key = (Settings.data.tmdbApiKey || '').trim();
+    if (!key) return [];
+    try {
+      const res = await fetch(`https://api.themoviedb.org/3/search/movie?api_key=${key}&query=${encodeURIComponent(query)}&language=zh-CN`);
+      if (!res.ok) return [];
+      const data = await res.json();
+      return (data.results || []).slice(0, 5).map(r => ({
+        tmdbId: r.id,
+        title: r.title,
+        year: r.release_date ? r.release_date.slice(0, 4) : '',
+        posterPath: r.poster_path || null
+      }));
+    } catch {
+      return [];
+    }
+  },
+
   getFiltered() {
     if (!this.searchQuery) return this.data;
     const q = this.searchQuery;
@@ -153,10 +174,12 @@ const Movies = {
         : '';
 
       return `
-        <div class="item-card ${watchedClass}" data-id="${movie.id}">
-          <div class="item-header">
+        <div class="item-card ${watchedClass}" data-id="${movie.id}" style="${movie.poster ? 'display:flex;gap:0.75rem;' : ''}">
+          ${movie.poster ? `<img class="movie-poster" src="https://image.tmdb.org/t/p/w92${movie.poster}" alt="" loading="lazy">` : ''}
+          <div class="item-header" style="${movie.poster ? 'flex:1;min-width:0;' : ''}">
             <div class="item-body">
               <p class="item-text" onclick="Movies.startEdit('${movie.id}')">${this.escapeHtml(movie.name)}</p>
+              ${movie.year ? `<span style="font-size:0.75rem;color:var(--text-secondary);">${movie.year}</span>` : ''}
               <div class="movie-info-row">
                 ${ratingHtml}
                 ${movie.watched ? '<span class="watched-label">✓ 已看过</span>' : '<span class="unwatched-label">未看过</span>'}
@@ -170,8 +193,8 @@ const Movies = {
               ${commentBtn}
               <button class="btn-danger" onclick="Movies.remove('${movie.id}')" title="删除">✕</button>
             </div>
+            ${commentsHtml}
           </div>
-          ${commentsHtml}
         </div>
       `;
     }).join('');
@@ -259,8 +282,22 @@ const Movies = {
     // Add movie button -> open dialog
     document.getElementById('add-movie-btn').addEventListener('click', () => this.openAddDialog());
 
-    // Add movie dialog: confirm
-    document.getElementById('add-movie-confirm').addEventListener('click', () => this.confirmAdd());
+    // Add movie dialog: confirm — 有选中结果则带图添加, 否则直接添加
+    document.getElementById('add-movie-confirm').addEventListener('click', () => {
+      const name = document.getElementById('add-movie-input').value.trim();
+      if (!name) return;
+      if (this.selectedResult) {
+        this.add(this.selectedResult.title, {
+          tmdbId: this.selectedResult.tmdbId,
+          poster: this.selectedResult.posterPath,
+          year: this.selectedResult.year
+        });
+        this.closeAddDialog();
+      } else {
+        this.add(name);
+        this.closeAddDialog();
+      }
+    });
 
     // Add movie dialog: cancel
     document.getElementById('add-movie-cancel').addEventListener('click', () => this.closeAddDialog());
@@ -270,10 +307,35 @@ const Movies = {
       if (e.target === e.currentTarget) this.closeAddDialog();
     });
 
-    // Add movie dialog: Enter to confirm, Escape to cancel
+    // Add movie dialog: search button — 搜索 TMDB
+    document.getElementById('add-movie-search').addEventListener('click', () => {
+      const name = document.getElementById('add-movie-input').value.trim();
+      if (name) this.doSearch(name);
+    });
+
+    // Add movie dialog: Enter -> 有 key 搜索, 无 key 直接添加
     document.getElementById('add-movie-input').addEventListener('keydown', (e) => {
-      if (e.key === 'Enter') { e.preventDefault(); this.confirmAdd(); }
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        const name = document.getElementById('add-movie-input').value.trim();
+        if (!name) return;
+        const hasKey = !!(Settings.data.tmdbApiKey || '').trim();
+        if (hasKey) {
+          this.doSearch(name);
+        } else {
+          this.add(name);
+          this.closeAddDialog();
+        }
+      }
       if (e.key === 'Escape') { e.preventDefault(); this.closeAddDialog(); }
+    });
+
+    // 编辑输入框时清除选中的搜索结果
+    document.getElementById('add-movie-input').addEventListener('input', () => {
+      if (this.selectedResult) {
+        this.selectedResult = null;
+        document.querySelectorAll('.movie-search-result').forEach(el => el.classList.remove('selected'));
+      }
     });
 
 // Comment dialog: close
@@ -325,22 +387,72 @@ const Movies = {
   },
 
   openAddDialog() {
+    this.selectedResult = null;
     const input = document.getElementById('add-movie-input');
     input.value = '';
     document.getElementById('add-movie-overlay').style.display = 'flex';
+    document.getElementById('add-movie-results').style.display = 'none';
+    document.getElementById('add-movie-results').innerHTML = '';
+    const hasKey = !!(Settings.data.tmdbApiKey || '').trim();
+    document.getElementById('add-movie-input-wrap').classList.toggle('with-search', hasKey);
     input.focus();
   },
 
   closeAddDialog() {
+    this.selectedResult = null;
     document.getElementById('add-movie-overlay').style.display = 'none';
+    document.getElementById('add-movie-search').disabled = false;
+    document.getElementById('add-movie-search').textContent = '搜索';
   },
 
   confirmAdd() {
     const input = document.getElementById('add-movie-input');
     const name = input.value.trim();
-    if (name) {
+    if (!name) return;
+    const hasKey = !!(Settings.data.tmdbApiKey || '').trim();
+    if (hasKey) {
+      this.doSearch(name);
+    } else {
       this.add(name);
       this.closeAddDialog();
     }
+  },
+
+  async doSearch(query) {
+    this.selectedResult = null;
+    const btn = document.getElementById('add-movie-search');
+    btn.textContent = '搜索中…';
+    btn.disabled = true;
+    const results = await this.searchTMDB(query);
+    btn.textContent = '搜索';
+    btn.disabled = false;
+
+    const container = document.getElementById('add-movie-results');
+    container.innerHTML = '';
+    container.style.display = 'block';
+
+    if (results.length === 0) {
+      container.innerHTML = '<div class="movie-search-empty">未找到匹配的电影</div>';
+      return;
+    }
+
+    results.forEach(r => {
+      const item = document.createElement('div');
+      item.className = 'movie-search-result';
+      item.innerHTML = `
+        <img class="movie-search-poster" src="https://image.tmdb.org/t/p/w92${r.posterPath || ''}" alt="" onerror="this.style.display='none'">
+        <div class="movie-search-info">
+          <div class="movie-search-title">${this.escapeHtml(r.title)}</div>
+          <div class="movie-search-year">${r.year || ''}</div>
+        </div>
+      `;
+      item.addEventListener('click', () => {
+        container.querySelectorAll('.movie-search-result').forEach(el => el.classList.remove('selected'));
+        item.classList.add('selected');
+        this.selectedResult = r;
+        document.getElementById('add-movie-input').value = r.title;
+      });
+      container.appendChild(item);
+    });
   }
 };

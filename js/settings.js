@@ -13,8 +13,8 @@ const Settings = {
 
   load() {
     const saved = Storage.get('trios_settings');
-    if (saved && saved.visibleModules) {
-      this.data = saved;
+    if (saved) {
+      this.data = { ...this.data, ...saved };
     }
   },
 

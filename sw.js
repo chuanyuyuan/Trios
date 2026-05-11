@@ -1,4 +1,4 @@
-const CACHE = 'trios-v3';
+const CACHE = 'trios-v4';
 const STATIC_URLS = [
   '/css/style.css',
   '/js/utils.js',
@@ -6,6 +6,7 @@ const STATIC_URLS = [
   '/js/ideas.js',
   '/js/movies.js',
   '/js/tasks.js',
+  '/js/settings.js',
   '/js/app.js',
   '/manifest.json',
   '/icons/icon-192x192.png',

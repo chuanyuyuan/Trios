@@ -15,26 +15,28 @@
   <title>Trios</title>
 </head>
 <body>
-  <header class="app-header">
-    <div class="container">
-      <div class="header-row">
-        <div class="header-left">
-          <h1 class="app-title">Trios</h1>
-          <p class="app-subtitle">个人生活管理中心</p>
+  <div id="sticky-head">
+    <header class="app-header">
+      <div class="container">
+        <div class="header-row">
+          <div class="header-left">
+            <h1 class="app-title">Trios</h1>
+            <p class="app-subtitle">个人生活管理中心</p>
+          </div>
+          <input type="search" id="header-search" class="header-search" placeholder="搜索...">
         </div>
-        <input type="search" id="header-search" class="header-search" placeholder="搜索...">
       </div>
-    </div>
-  </header>
+    </header>
 
-  <nav class="tab-nav">
-    <div class="container tab-nav-inner">
-      <button class="tab-btn active" data-tab="tasks">任务</button>
-      <button class="tab-btn" data-tab="ideas">灵感</button>
-      <button class="tab-btn" data-tab="movies">电影</button>
-      <button class="tab-btn" data-tab="settings">设置</button>
-    </div>
-  </nav>
+    <nav class="tab-nav">
+      <div class="container tab-nav-inner">
+        <button class="tab-btn active" data-tab="tasks">任务</button>
+        <button class="tab-btn" data-tab="ideas">灵感</button>
+        <button class="tab-btn" data-tab="movies">电影</button>
+        <button class="tab-btn" data-tab="settings">设置</button>
+      </div>
+    </nav>
+  </div>
 
   <main class="container main-content">
     <!-- Tasks Tab -->
@@ -101,8 +103,12 @@
   <div id="add-movie-overlay" class="dialog-overlay" style="display:none">
     <div class="dialog-card">
       <p class="dialog-title">添加电影</p>
-      <input type="text" id="add-movie-input" class="dialog-input" placeholder="输入电影名称...">
-      <div class="dialog-actions">
+      <div id="add-movie-input-wrap">
+        <input type="text" id="add-movie-input" placeholder="输入电影名称...">
+        <button id="add-movie-search" class="primary">搜索</button>
+      </div>
+      <div id="add-movie-results" style="display:none;"></div>
+      <div class="dialog-actions" style="margin-top:0.75rem;">
         <button id="add-movie-cancel" class="secondary">取消</button>
         <button id="add-movie-confirm" class="primary">确定</button>
       </div>

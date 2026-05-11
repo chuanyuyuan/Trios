@@ -38,15 +38,19 @@ input, textarea, [contenteditable] {
   touch-action: manipulation;
 }
 
+/* ===== Sticky Head Wrapper ===== */
+#sticky-head {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
 /* ===== Header ===== */
 .app-header {
   background: var(--card-bg);
   border-bottom: 1px solid var(--border);
   padding: 0.6rem 0;
   padding-top: calc(0.6rem + env(safe-area-inset-top, 0px));
-  position: sticky;
-  top: 0;
-  z-index: 10;
 }
 .header-row {
   display: flex;
@@ -82,9 +86,6 @@ input, textarea, [contenteditable] {
 .tab-nav {
   background: var(--card-bg);
   border-bottom: 1px solid var(--border);
-  position: sticky;
-  top: calc(68px + env(safe-area-inset-top, 0px));
-  z-index: 10;
   padding: 0;
 }
 .tab-nav-inner {
@@ -181,6 +182,7 @@ input, textarea, [contenteditable] {
   align-items: flex-start;
   justify-content: space-between;
   gap: 0.5rem;
+  flex-wrap: wrap;
 }
 
 .item-body {
@@ -416,6 +418,7 @@ input, textarea, [contenteditable] {
   margin-top: 0.6rem;
   padding-top: 0.5rem;
   border-top: 1px solid var(--border);
+  width: 100%;
 }
 .movie-comment-item {
   display: flex;
@@ -465,6 +468,73 @@ input, textarea, [contenteditable] {
 .mc-delete:hover {
   opacity: 1;
   color: var(--priority-high);
+}
+
+/* ===== Movie Poster ===== */
+.movie-poster {
+  width: 80px;
+  height: 120px;
+  border-radius: 6px;
+  object-fit: cover;
+  flex-shrink: 0;
+  align-self: flex-start;
+  margin-top: 0.15rem;
+  background: var(--bg);
+}
+
+/* ===== Movie Search Dialog ===== */
+#add-movie-results {
+  margin-top: 0.75rem;
+  border-top: 1px solid var(--border);
+  padding-top: 0.5rem;
+  max-height: 320px;
+  overflow-y: auto;
+}
+.movie-search-result {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.4rem;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.movie-search-result:hover {
+  background: rgba(0,0,0,0.04);
+}
+.movie-search-result:active {
+  background: rgba(0,0,0,0.08);
+}
+.movie-search-poster {
+  width: 40px;
+  height: 60px;
+  border-radius: 4px;
+  object-fit: cover;
+  flex-shrink: 0;
+  background: var(--bg);
+}
+.movie-search-info {
+  flex: 1;
+  min-width: 0;
+}
+.movie-search-title {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.movie-search-year {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  margin-top: 0.1rem;
+}
+.movie-search-empty {
+  text-align: center;
+  padding: 1rem 0;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
 }
 
 /* ===== Watched / Unwatched ===== */
@@ -554,6 +624,50 @@ main.container {
   text-align: center;
   padding: 2rem 1rem;
   color: var(--text-secondary);
+}
+
+/* ===== Add Movie Dialog ===== */
+#add-movie-overlay .dialog-card {
+  max-width: 320px;
+  width: calc(100% - 2rem);
+}
+#add-movie-input-wrap {
+  position: relative;
+  margin-bottom: 0.75rem;
+}
+#add-movie-input-wrap input {
+  width: 100%;
+  box-sizing: border-box;
+  margin: 0;
+  padding-right: 52px;
+}
+#add-movie-search {
+  display: none;
+  position: absolute;
+  right: 4px;
+  top: 50%;
+  transform: translateY(-50%);
+  margin: 0;
+  padding: 0.15rem 0.55rem;
+  font-size: 0.85rem;
+  border-radius: 6px;
+  line-height: 1.5;
+  white-space: nowrap;
+  min-width: 0;
+  z-index: 1;
+}
+#add-movie-search:disabled {
+  opacity: 0.4;
+  pointer-events: none;
+}
+#add-movie-input-wrap.with-search #add-movie-search {
+  display: block;
+}
+
+/* Search result selected state */
+.movie-search-result.selected {
+  background: rgba(0,122,255,0.12);
+  outline: 1px solid var(--accent);
 }
 
 /* ===== Shared Dialog Overlay ===== */
