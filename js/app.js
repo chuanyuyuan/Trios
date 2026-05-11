@@ -18,8 +18,8 @@
   });
 
   // Sync search input with current tab
-  const modules = { ideas: Ideas, movies: Movies, tasks: Tasks };
-  const placeholders = { ideas: '搜索灵感...', movies: '搜索电影...', tasks: '搜索任务...', settings: '' };
+  const modules = { ideas: Ideas, movies: Movies, tasks: Tasks, settings: Settings };
+  const placeholders = { ideas: '搜索灵感...', movies: '搜索电影...', tasks: '搜索任务...', settings: '搜索设置...' };
 
   function getActiveTab() {
     return document.querySelector('.tab-btn.active')?.dataset.tab || 'ideas';
@@ -29,7 +29,6 @@
     const m = modules[tab];
     searchInput.placeholder = placeholders[tab] || '';
     searchInput.value = m ? m.searchQuery : '';
-    searchInput.style.display = tab === 'settings' ? 'none' : '';
   }
 
   // Shared search handler

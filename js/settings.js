@@ -2,6 +2,7 @@ const Settings = {
   data: {
     visibleModules: { tasks: true, ideas: true, movies: true }
   },
+  searchQuery: '',
 
   init() {
     this.load();
@@ -97,45 +98,68 @@ const Settings = {
     }
   },
 
+  search(query) {
+    this.searchQuery = query.trim().toLowerCase();
+    this.render();
+  },
+
   render() {
     const container = document.getElementById('settings-content');
     if (!container) return;
 
     const vm = this.data.visibleModules;
     const visibleCount = Object.values(vm).filter(Boolean).length;
+    const q = this.searchQuery;
 
-    container.innerHTML = `
-      <section class="settings-section">
-        <h3 class="settings-section-title">模块显示</h3>
-        <p class="settings-section-desc">选择要在导航栏中显示的模块（至少选择一项）</p>
-        <div class="settings-toggle-list">
-          <label class="settings-toggle-item ${vm.tasks && visibleCount <= 1 ? 'disabled' : ''}">
-            <span>任务</span>
-            <input type="checkbox" class="settings-toggle-input" data-module="tasks" ${vm.tasks ? 'checked' : ''}>
-            <span class="settings-toggle-slider"></span>
-          </label>
-          <label class="settings-toggle-item ${vm.ideas && visibleCount <= 1 ? 'disabled' : ''}">
-            <span>灵感</span>
-            <input type="checkbox" class="settings-toggle-input" data-module="ideas" ${vm.ideas ? 'checked' : ''}>
-            <span class="settings-toggle-slider"></span>
-          </label>
-          <label class="settings-toggle-item ${vm.movies && visibleCount <= 1 ? 'disabled' : ''}">
-            <span>电影</span>
-            <input type="checkbox" class="settings-toggle-input" data-module="movies" ${vm.movies ? 'checked' : ''}>
-            <span class="settings-toggle-slider"></span>
-          </label>
-        </div>
-      </section>
+    // Filter helper: hide section if query doesn't match its text
+    const match = (...texts) => !q || texts.some(t => t.toLowerCase().includes(q));
 
-      <section class="settings-section">
-        <h3 class="settings-section-title">数据管理</h3>
-        <p class="settings-section-desc">导出或导入所有数据（JSON 格式）</p>
-        <div class="settings-btn-group">
-          <button id="settings-export-btn" class="primary">导出数据</button>
-          <button id="settings-import-btn" class="secondary">导入数据</button>
-        </div>
-      </section>
-    `;
+    let html = '';
+
+    if (match('模块', '任务', '灵感', '电影', '显示', '导航')) {
+      html += `
+        <section class="settings-section">
+          <h3 class="settings-section-title">模块显示</h3>
+          <p class="settings-section-desc">选择要在导航栏中显示的模块（至少选择一项）</p>
+          <div class="settings-toggle-list">
+            <label class="settings-toggle-item ${vm.tasks && visibleCount <= 1 ? 'disabled' : ''}">
+              <span>任务</span>
+              <input type="checkbox" class="settings-toggle-input" data-module="tasks" ${vm.tasks ? 'checked' : ''}>
+              <span class="settings-toggle-slider"></span>
+            </label>
+            <label class="settings-toggle-item ${vm.ideas && visibleCount <= 1 ? 'disabled' : ''}">
+              <span>灵感</span>
+              <input type="checkbox" class="settings-toggle-input" data-module="ideas" ${vm.ideas ? 'checked' : ''}>
+              <span class="settings-toggle-slider"></span>
+            </label>
+            <label class="settings-toggle-item ${vm.movies && visibleCount <= 1 ? 'disabled' : ''}">
+              <span>电影</span>
+              <input type="checkbox" class="settings-toggle-input" data-module="movies" ${vm.movies ? 'checked' : ''}>
+              <span class="settings-toggle-slider"></span>
+            </label>
+          </div>
+        </section>
+      `;
+    }
+
+    if (match('数据', '导出', '导入', '备份', 'JSON')) {
+      html += `
+        <section class="settings-section">
+          <h3 class="settings-section-title">数据管理</h3>
+          <p class="settings-section-desc">导出或导入所有数据（JSON 格式）</p>
+          <div class="settings-btn-group">
+            <button id="settings-export-btn" class="primary">导出数据</button>
+            <button id="settings-import-btn" class="secondary">导入数据</button>
+          </div>
+        </section>
+      `;
+    }
+
+    if (!html) {
+      html = '<div class="no-results"><p>未找到匹配的设置项</p></div>';
+    }
+
+    container.innerHTML = html;
   },
 
   bindEvents() {
