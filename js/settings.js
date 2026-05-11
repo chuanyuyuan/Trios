@@ -1,6 +1,7 @@
 const Settings = {
   data: {
-    visibleModules: { tasks: true, ideas: true, movies: true }
+    visibleModules: { tasks: true, ideas: true, movies: true },
+    tmdbApiKey: ''
   },
   searchQuery: '',
 
@@ -158,6 +159,22 @@ const Settings = {
       `;
     }
 
+    const key = this.data.tmdbApiKey || '';
+    if (match('TMDB', 'API', '电影', '海报', '密钥', 'key', 'tmdb')) {
+      html += `
+        <section class="settings-section">
+          <h3 class="settings-section-title">TMDB 配置</h3>
+          <p class="settings-section-desc">用于获取电影海报。在 <a href="https://www.themoviedb.org/settings/api" target="_blank" rel="noopener">TMDB API 设置页</a> 申请 API Key (v3 auth) 后填入</p>
+          <div class="settings-toggle-list">
+            <label class="settings-toggle-item" style="flex-direction:column;align-items:stretch;gap:0.4rem;cursor:default;">
+              <span style="font-size:0.85rem;color:var(--text-secondary);">API Key</span>
+              <input type="text" id="settings-tmdb-key" class="dialog-input" style="margin:0;" placeholder="输入 TMDB API Key..." value="${this.escapeHtml(key)}">
+            </label>
+          </div>
+        </section>
+      `;
+    }
+
     if (!html) {
       html = '<div class="no-results"><p>未找到匹配的设置项</p></div>';
     }
@@ -191,5 +208,19 @@ const Settings = {
         e.target.value = '';
       }
     });
+
+    // TMDB API key input: save on change
+    document.getElementById('settings-content').addEventListener('input', (e) => {
+      if (e.target.id === 'settings-tmdb-key') {
+        this.data.tmdbApiKey = e.target.value.trim();
+        this.save();
+      }
+    });
+  },
+
+  escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
   }
 };
